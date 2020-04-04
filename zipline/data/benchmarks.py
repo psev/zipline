@@ -12,6 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
+
 import pandas as pd
 import requests
 
@@ -29,8 +31,13 @@ def get_benchmark_returns(symbol):
     The data is provided by IEX (https://iextrading.com/), and we can
     get up to 5 years worth of data.
     """
+    api_key = os.getenv('IEX_API_KEY')
+
+    if not api_key:
+        raise Exception('Missing IEX API Key.')
+
     r = requests.get(
-        'https://api.iextrading.com/1.0/stock/{}/chart/5y'.format(symbol)
+        'https://cloud.iexapis.com/stable/stock/{}/chart/5y?token={}'.format(symbol, api_key)
     )
     data = r.json()
 
